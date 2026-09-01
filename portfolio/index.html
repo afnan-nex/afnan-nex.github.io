@@ -6444,15 +6444,17 @@ void main () {
             }
 
             let ambientTime = 0;
+            let lastRipple = 0;
             function render(_t) {
                 const dt = 1 / 60;
-                ambientTime += 0.02;
-                if (!isHovering && container.clientWidth > 0) {
+                ambientTime += 0.015;
+                if (!isHovering && container.clientWidth > 0 && (_t - lastRipple > 1500)) {
+                    lastRipple = _t;
                     pointer.moved = true;
-                    pointer.x = (0.5 + 0.18 * Math.cos(ambientTime * 0.8)) * container.clientWidth;
-                    pointer.y = (0.5 + 0.18 * Math.sin(ambientTime * 1.1)) * container.clientHeight;
-                    pointer.dx = Math.cos(ambientTime * 1.5) * 1.5;
-                    pointer.dy = Math.sin(ambientTime * 1.5) * 1.5;
+                    pointer.x = (0.5 + 0.15 * Math.cos(ambientTime)) * container.clientWidth;
+                    pointer.y = (0.5 + 0.15 * Math.sin(ambientTime)) * container.clientHeight;
+                    pointer.dx = Math.cos(ambientTime * 2.0) * 0.8;
+                    pointer.dy = Math.sin(ambientTime * 2.0) * 0.8;
                 }
                 if (pointer.moved) {
                     if (!isPreview) pointer.moved = false;
