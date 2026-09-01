@@ -1,0 +1,184 @@
+\documentclass[11pt,letterpaper]{article}
+
+\usepackage[margin=0.5in]{geometry}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{titlesec}
+
+% Define colors
+\definecolor{darkblue}{RGB}{0, 51, 102}
+\definecolor{gray}{RGB}{64, 64, 64}
+
+% Format section titles
+\titleformat{\section}
+  {\color{darkblue}\large\bfseries}
+  {}
+  {0em}
+  {}[\titlerule]
+
+\titleformat{\subsection}
+  {\bfseries}
+  {}
+  {0em}
+  {}
+
+% Remove page numbers
+\pagestyle{empty}
+
+% Custom commands
+\newcommand{\header}[4]{
+  \begin{center}
+    {\Large\bfseries #1} \\
+    \vspace{0.25em}
+    \small #2 \\ \textbar{} \\ #3 \\ \textbar{} \\ #4
+  \end{center}
+  \vspace{0.5em}
+}
+
+\newcommand{\job}[4]{
+  \subsection*{#1 \hfill #2}
+  \textit{#3} \hfill #4 \\
+}
+
+\newcommand{\project}[2]{
+  \item \textbf{#1}: #2
+}
+
+\begin{document}
+
+% Header
+\header
+  {MUHAMMAD AFNAN SIDDIQUI}
+  {GitHub: github.com/afnan-nex}
+  {Portfolio: afnan-nex.github.io/portfolio}
+  {LinkedIn: linkedin.com/in/muhammad-afnan-siddiqui-a9953a364/}
+
+% Summary Section
+\section*{PROFESSIONAL SUMMARY}
+Full-stack developer with expertise in cross-platform application development, desktop and mobile software engineering, and automation workflows. Experienced in building inventory management systems, payment processing applications, and developer tooling. Proficient in multiple programming languages and frameworks with demonstrated ability to design scalable database architectures and implement role-based access control systems.
+
+% Technical Skills
+\section*{TECHNICAL SKILLS}
+
+\subsection*{Programming Languages}
+C++, Python, JavaScript, Dart, SQL
+
+\subsection*{Web Development}
+HTML5, CSS3, Node.js, REST API Integration, Express.js
+
+\subsection*{Mobile Development}
+Flutter, Dart, Cross-platform Application Development, Android Development
+
+\subsection*{Desktop Development}
+Qt6, CustomTkinter, PyInstaller, C++, GUI Development
+
+\subsection*{Database Technologies}
+SQLite, PostgreSQL, SQL, Database Design, Database Normalization, Supabase
+
+\subsection*{Backend and APIs}
+Node.js, Express, Authentication, Authorization, Role-Based Access Control (RBAC), CRUD Applications
+
+\subsection*{Core Competencies}
+Offline-first Application Design, POS System Architecture, Inventory Management, File Handling, Barcode Scanner Integration, Receipt Printing Workflows, Local Network Communication, API Integration, Command-Line Automation, Cross-platform Software Development, Debugging and Troubleshooting, UI/UX Implementation, Software Deployment Planning
+
+\subsection*{Version Control and Collaboration}
+Git, GitHub, Feature-first Project Organization, Git-based Project Management
+
+\subsection*{Developer Tools and Environments}
+Visual Studio Code, Qt Creator, Android Studio, Flutter SDK, Node.js, npm, Python, CMake, Ninja, Windows Terminal, PowerShell, Command Prompt, ADB Platform Tools
+
+\subsection*{Automation and DevOps}
+Package Management Automation, PowerShell Scripting, Windows Batch Scripting, FFmpeg, yt-dlp, aria2, Custom Script Development
+
+\subsection*{Web Infrastructure}
+WordPress, WooCommerce, Netlify, Google Cloud Platform (GCP), Hugging Face, n8n Automation Platform
+
+\subsection*{AI and Machine Learning Integration}
+OpenRouter, Hugging Face Models, Pollinations AI, Google Gemma, Qwen, DeepSeek AI, Leonardo AI, Unreal Speech API, Kokoro TTS, Gemini CLI, Technical Prompt Engineering
+
+\subsection*{Package Managers and Utilities}
+Chocolatey, WinGet, Scoop, Inno Setup, npm, Ventoy, Rufus, Package Management Automation
+
+\subsection*{Additional Technologies}
+System Administration, Windows Installation and Recovery, UEFI/GPT Configuration, Windows Optimization, Developer Environment Setup, Single-file Browser Tools, File Extension Downloads, Client-side Caching
+
+% Key Projects
+\section*{KEY PROJECTS AND TECHNICAL CAPABILITIES}
+
+\subsection*{Flutter Inventory Management System}
+Designed and built a multi-role inventory management system using Flutter and Supabase with Owner, Manager, and Employee role separation. Implemented comprehensive features including product management, category management, supplier management, customer management, purchase tracking, inventory tracking, POS/Sales functionality, and reporting dashboards. Developed offline synchronization architecture and PostgreSQL database schema with SQL migrations. Fixed race conditions in stock updates and implemented reporting with charts and data exports.
+
+\subsection*{Cash Collection and POS Web Application}
+Developed a touch-friendly cash collection interface as a full-stack web application with Owner and Cashier workflows. Created responsive dashboard and transaction history features with customized receipt layout. Implemented cashier management capabilities and planned barcode scanner and receipt printer compatibility.
+
+\subsection*{Pakeeza Pay - Payment Confirmation Web Application}
+Built a dual-QR payment confirmation system for bakery operations using HTML/CSS/JS frontend, Node.js/Express backend, and SQLite database. Implemented session-based authentication with bcrypt and express-session. Designed sequential QR display for student payment flow and created administrative dashboard with GoDaddy Core UI design theme (teal accent color).
+
+\subsection*{Desktop Application Development}
+Converted Python scripts into production-ready desktop GUI applications using CustomTkinter and PyInstaller. Designed and structured database-backed applications featuring administrative controls and data import/export capabilities. Developed Windows PowerShell GUI utilities and Qt/C++ desktop applications. Experience in creating resizable interfaces and standalone executable deployment.
+
+\subsection*{Peer-to-Peer File Sharing Application}
+Planned and architected a Flutter application for Windows and Android platforms featuring local network device discovery and device-to-device file transfer without internet dependency. Designed desktop-style application architecture for cross-platform compatibility.
+
+\subsection*{Windows Automation and Installer Tools}
+Designed and deployed the Tools Installer using Inno Setup for batch project deployment. Created PowerShell automation tools for software installation, updates, and package management using Chocolatey and Winget. Developed developer setup scripts and VPNGate SSTP auto-connection automation with health scoring and fallback logic.
+
+\subsection*{Media Processing and Automation}
+Developed music organizer automation tools using Mutagen metadata handling. Created image conversion utilities and FFmpeg-based media workflows. Built download automation using yt-dlp and aria2. Implemented batch file renaming with OOP architecture demonstrating inheritance, polymorphism, and encapsulation.
+
+\subsection*{WordPress and E-Commerce Solutions}
+Customized WooCommerce stores with modified checkout behavior and custom plugin features. Implemented SEO optimization using RankMath and performance optimization with LiteSpeed Cache. Performed theme customization and integrated custom HTML/CSS/JavaScript components. Completed cross-platform e-commerce data synchronization project for product and inventory tracking.
+
+\subsection*{Browser Utilities and Web Tools}
+Created single-file browser tools for QR code detection, link conversion, and file caching. Developed interactive games and emergency vault applications. Implemented client-side caching and custom file extension downloads. Built command-line execution tools for batch cloning and scripting.
+
+\subsection*{Workflow Automation with n8n}
+Developed multi-stage data synchronization pipelines and automated media downloader using n8n low-code platform. Completed cross-platform e-commerce synchronization for inventory and product tracking.
+
+% Education
+\section*{EDUCATION}
+
+Department of Computer Science, University of Engineering and Technology, Taxila, Pakistan
+
+Relevant Coursework: Object-Oriented Programming (OOP), Data Structures, Algorithms, Database Management, Statistics, Software Engineering
+
+% Additional Competencies
+\section*{ADDITIONAL COMPETENCIES}
+
+\begin{itemize}
+  \item Full-stack application architecture and design patterns
+  \item Scalable database schema design and SQL optimization
+  \item Role-based access control (RBAC) and authentication systems
+  \item Inventory and POS workflow design and implementation
+  \item Report generation and data export (CSV, PDF, Excel)
+  \item API integration and REST principles
+  \item CLI tooling and command-line interface design
+  \item Local-first application design principles
+  \item Windows system administration and optimization
+  \item Cross-platform software development and deployment
+  \item Responsive UI/UX implementation
+  \item Software debugging and performance troubleshooting
+  \item Version control workflow management
+  \item Microservices and distributed system concepts
+  \item Technical documentation and code maintainability
+\end{itemize}
+
+% Professional Tools and Platforms
+\section*{TOOLS AND PLATFORMS}
+
+Version Control: Git, GitHub, GitLab
+
+Development Environments: Visual Studio Code, Qt Creator, Android Studio, Visual Studio
+
+Databases: SQLite, PostgreSQL, Supabase
+
+Cloud Services: Google Cloud Platform (GCP), Netlify
+
+Automation: n8n, PowerShell, Python, Bash
+
+Build Systems: CMake, Ninja, Gradle
+
+Testing and Debugging: Playwright, Puppeteer, Selenium, Android Debug Bridge (ADB)
+
+% End Document
+\end{document}
