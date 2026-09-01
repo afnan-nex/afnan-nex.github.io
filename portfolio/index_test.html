@@ -6423,7 +6423,6 @@ void main () {
                     if (url.startsWith('http://') || url.startsWith('https://')) {
                         img.crossOrigin = 'anonymous';
                     }
-                    img.src = url;
                     img.onload = () => {
                         imgRatio = img.naturalWidth / Math.max(1, img.naturalHeight);
                         imageTexture = gl.createTexture();
@@ -6439,6 +6438,7 @@ void main () {
                     img.onerror = () => {
                         tryNext();
                     };
+                    img.src = url;
                 }
                 tryNext();
             }
