@@ -5824,25 +5824,29 @@
                 }
             }
 
+            let lastHoveredCell = { x: -1, y: -1 };
+
             function applyInteraction(px, py) {
                 const cellX = Math.floor(px / cellSize);
                 const cellY = Math.floor(py / cellSize);
+
+                if (lastHoveredCell.x === cellX && lastHoveredCell.y === cellY) {
+                    return;
+                }
+
                 if (cellX >= 0 && cellX < cols && cellY >= 0 && cellY < rows) {
                     if (!isInsideKeepOut(cellX, cellY)) {
-                        if (grid[cellX][cellY] === null) {
-                            const color = colors[Math.floor(Math.random() * colors.length)];
-                            grid[cellX][cellY] = color;
-                            activeCells.push({ x: cellX, y: cellY, color });
-                            drawCell(cellX, cellY, color);
-                            expand();
-                            expand();
-                        } else {
-                            const color = colors[Math.floor(Math.random() * colors.length)];
-                            grid[cellX][cellY] = color;
-                            drawCell(cellX, cellY, color);
-                            const isActive = activeCells.some(c => c.x === cellX && c.y === cellY);
-                            if (!isActive) activeCells.push({ x: cellX, y: cellY, color });
-                        }
+                        lastHoveredCell = { x: cellX, y: cellY };
+                        const currentColor = grid[cellX][cellY];
+                        let newColor;
+                        do {
+                            newColor = colors[Math.floor(Math.random() * colors.length)];
+                        } while (newColor === currentColor && colors.length > 1);
+
+                        grid[cellX][cellY] = newColor;
+                        drawCell(cellX, cellY, newColor);
+                        const isActive = activeCells.some(c => c.x === cellX && c.y === cellY);
+                        if (!isActive) activeCells.push({ x: cellX, y: cellY, color: newColor });
                     }
                 }
             }
@@ -5881,6 +5885,7 @@
                 } else {
                     mouseX = -1000;
                     mouseY = -1000;
+                    lastHoveredCell = { x: -1, y: -1 };
                 }
             }, 16);
 
@@ -7176,83 +7181,83 @@ void main() {
     </script>
 
     <script>
-        (function () {
-            const canvas = document.getElementById('sphereCanvas');
-            if (!canvas) return;
-            const ctx = canvas.getContext('2d');
-            let frameId = 0;
-            let time = 0;
+        (function() {
+          const canvas = document.getElementById('sphereCanvas');
+          if (!canvas) return;
+          const ctx = canvas.getContext('2d');
+          let frameId = 0;
+          let time = 0;
 
-            const chars = "░▒▓█▀▄▌▐│─┤├┴┬╭╮╰╯";
+          const chars = "░▒▓█▀▄▌▐│─┤├┴┬╭╮╰╯";
 
-            function resize() {
-                const dpr = window.devicePixelRatio || 1;
-                const rect = canvas.getBoundingClientRect();
-                canvas.width = rect.width * dpr;
-                canvas.height = rect.height * dpr;
-                ctx.scale(dpr, dpr);
-            }
+          function resize() {
+            const dpr = window.devicePixelRatio || 1;
+            const rect = canvas.getBoundingClientRect();
+            canvas.width = rect.width * dpr;
+            canvas.height = rect.height * dpr;
+            ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+          }
 
-            resize();
-            window.addEventListener('resize', resize);
+          resize();
+          window.addEventListener('resize', resize);
 
-            function render() {
-                const rect = canvas.getBoundingClientRect();
-                ctx.clearRect(0, 0, rect.width, rect.height);
+          function render() {
+            const rect = canvas.getBoundingClientRect();
+            ctx.clearRect(0, 0, rect.width, rect.height);
 
-                const centerX = rect.width / 2;
-                const centerY = rect.height / 2;
-                const radius = Math.min(rect.width, rect.height) * 0.525;
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+            const radius = Math.min(rect.width, rect.height) * 0.525;
 
-                ctx.font = "12px monospace";
-                ctx.textAlign = "center";
-                ctx.textBaseline = "middle";
+            ctx.font = "12px monospace";
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
 
-                const points = [];
+            const points = [];
 
-                for (let phi = 0; phi < Math.PI * 2; phi += 0.15) {
-                    for (let theta = 0; theta < Math.PI; theta += 0.15) {
-                        const x = Math.sin(theta) * Math.cos(phi + time * 0.5);
-                        const y = Math.sin(theta) * Math.sin(phi + time * 0.5);
-                        const z = Math.cos(theta);
+            for (let phi = 0; phi < Math.PI * 2; phi += 0.15) {
+              for (let theta = 0; theta < Math.PI; theta += 0.15) {
+                const x = Math.sin(theta) * Math.cos(phi + time * 0.5);
+                const y = Math.sin(theta) * Math.sin(phi + time * 0.5);
+                const z = Math.cos(theta);
 
-                        const rotY = time * 0.3;
-                        const newX = x * Math.cos(rotY) - z * Math.sin(rotY);
-                        const newZ = x * Math.sin(rotY) + z * Math.cos(rotY);
+                const rotY = time * 0.3;
+                const newX = x * Math.cos(rotY) - z * Math.sin(rotY);
+                const newZ = x * Math.sin(rotY) + z * Math.cos(rotY);
 
-                        const rotX = time * 0.2;
-                        const newY = y * Math.cos(rotX) - newZ * Math.sin(rotX);
-                        const finalZ = y * Math.sin(rotX) + newZ * Math.cos(rotX);
+                const rotX = time * 0.2;
+                const newY = y * Math.cos(rotX) - newZ * Math.sin(rotX);
+                const finalZ = y * Math.sin(rotX) + newZ * Math.cos(rotX);
 
-                        const depth = (finalZ + 1) / 2;
-                        const charIndex = Math.floor(depth * (chars.length - 1));
+                const depth = (finalZ + 1) / 2;
+                const charIndex = Math.floor(depth * (chars.length - 1));
 
-                        points.push({
-                            x: centerX + newX * radius,
-                            y: centerY + newY * radius,
-                            z: finalZ,
-                            char: chars[charIndex],
-                        });
-                    }
-                }
-
-                points.sort((a, b) => a.z - b.z);
-
-                points.forEach((point) => {
-                    const alpha = 0.2 + (point.z + 1) * 0.4;
-                    ctx.fillStyle = `rgba(252, 202, 18, ${alpha})`;
-                    ctx.fillText(point.char, point.x, point.y);
+                points.push({
+                  x: centerX + newX * radius,
+                  y: centerY + newY * radius,
+                  z: finalZ,
+                  char: chars[charIndex],
                 });
-
-                time += 0.02;
-                frameId = requestAnimationFrame(render);
+              }
             }
 
-            render();
+            points.sort((a, b) => a.z - b.z);
 
-            window.addEventListener('beforeunload', function () {
-                cancelAnimationFrame(frameId);
+            points.forEach((point) => {
+              const alpha = 0.2 + (point.z + 1) * 0.4;
+              ctx.fillStyle = `rgba(252, 202, 18, ${alpha})`;
+              ctx.fillText(point.char, point.x, point.y);
             });
+
+            time += 0.02;
+            frameId = requestAnimationFrame(render);
+          }
+
+          render();
+
+          window.addEventListener('beforeunload', function() {
+            cancelAnimationFrame(frameId);
+          });
         })();
     </script>
 </body>
