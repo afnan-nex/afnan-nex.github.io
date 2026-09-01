@@ -3508,7 +3508,7 @@
 
                 <div class="row gy-4 justify-content-center">
                     <div class="col-lg-4">
-                        <div id="about-container" role="img" style="background-image: url('./assets/images/my-Image.jpg'); background-size: cover; background-position: center;"
+                        <div id="about-container" role="img"
                             aria-label="Liquid hover distortion effect featuring M Afnan portfolio photo">
                             <canvas id="about-canvas"></canvas>
                         </div>
@@ -5961,22 +5961,11 @@
             const container = document.getElementById('about-container');
             if (!canvas || !container) return;
 
-            const gl = canvas.getContext('webgl2', { alpha: true }) || 
-                       canvas.getContext('webgl', { alpha: true }) || 
-                       canvas.getContext('experimental-webgl', { alpha: true });
-            if (!gl) return;
-
-            const extFloat = gl.getExtension('OES_texture_float') || gl.getExtension('EXT_color_buffer_float');
-            const extHalfFloat = gl.getExtension('OES_texture_half_float') || gl.getExtension('OES_texture_float');
+            const glMaybe = canvas.getContext('webgl', { alpha: true });
+            if (!glMaybe) return;
+            const gl = glMaybe;
+            gl.getExtension('OES_texture_float');
             gl.getExtension('OES_texture_float_linear');
-            gl.getExtension('OES_texture_half_float_linear');
-
-            let textureType = gl.FLOAT;
-            if (extHalfFloat && extHalfFloat.HALF_FLOAT_OES) {
-                textureType = extHalfFloat.HALF_FLOAT_OES;
-            } else if (!extFloat) {
-                textureType = gl.UNSIGNED_BYTE;
-            }
             gl.clearColor(0, 0, 0, 0);
 
             const intensity = 50;
@@ -6276,7 +6265,7 @@ void main () {
                 gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
                 gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
                 gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-                gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, w, h, 0, gl.RGBA, textureType, null);
+                gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, w, h, 0, gl.RGB, gl.FLOAT, null);
                 const fbo = gl.createFramebuffer();
                 gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
                 gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, texture, 0);
@@ -6314,7 +6303,7 @@ void main () {
             resizeCanvas();
             initFBOs();
             setupEvents();
-            loadImage('./assets/images/my-Image.jpg');
+            loadImage('https://raw.githubusercontent.com/afnan-nex/afnan-nex.github.io/refs/heads/main/public/portfolio/assets/images/my-Image.jpg');
             render(0);
 
             function initFBOs() {
@@ -6364,16 +6353,9 @@ void main () {
                 canvas.addEventListener('mouseleave', onLeave);
                 canvas.addEventListener('click', onClick);
                 canvas.addEventListener('mousemove', onMove);
-                const handleTouch = (e) => {
-                    if (e.touches && e.touches[0]) {
-                        isHovering = true;
-                        const rect = container.getBoundingClientRect();
-                        updatePointerPosition(e.touches[0].clientX - rect.left, e.touches[0].clientY - rect.top);
-                    }
-                };
-                canvas.addEventListener('touchstart', (e) => { handleTouch(e); }, { passive: true });
-                canvas.addEventListener('touchend', () => { isHovering = false; }, { passive: true });
-                canvas.addEventListener('touchmove', (e) => { handleTouch(e); }, { passive: true });
+                canvas.addEventListener('touchstart', onTouchStart, { passive: true });
+                canvas.addEventListener('touchend', onTouchEnd, { passive: true });
+                canvas.addEventListener('touchmove', onTouchMove, { passive: false });
                 window.addEventListener('resize', onResize);
 
                 const resizeObserver = new ResizeObserver(onResize);
@@ -6407,24 +6389,24 @@ void main () {
             }
 
             function loadImage(src) {
-                const candidates = [
-                    src,
-                    './assets/images/my-Image.jpg',
-                    'assets/images/my-Image.jpg',
-                    'portfolio/assets/images/my-Image.jpg',
-                    './portfolio/assets/images/my-Image.jpg',
-                    'https://raw.githubusercontent.com/afnan-nex/afnan-nex.github.io/main/public/portfolio/assets/images/my-Image.jpg'
-                ];
-                let idx = 0;
-                function tryNext() {
-                    if (idx >= candidates.length) return;
-                    const url = candidates[idx++];
-                    const img = new Image();
-                    if (url.startsWith('http://') || url.startsWith('https://')) {
-                        img.crossOrigin = 'anonymous';
-                    }
-                    img.onload = () => {
-                        imgRatio = img.naturalWidth / Math.max(1, img.naturalHeight);
+                const img = new Image();
+                img.crossOrigin = 'anonymous';
+                img.onload = () => {
+                    imgRatio = img.naturalWidth / Math.max(1, img.naturalHeight);
+                    imageTexture = gl.createTexture();
+                    gl.bindTexture(gl.TEXTURE_2D, imageTexture);
+                    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+                    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+                    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+                    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+                    gl.activeTexture(gl.TEXTURE0);
+                    gl.bindTexture(gl.TEXTURE_2D, imageTexture);
+                    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
+                };
+                img.onerror = () => {
+                    const fallback = new Image();
+                    fallback.onload = () => {
+                        imgRatio = fallback.naturalWidth / Math.max(1, fallback.naturalHeight);
                         imageTexture = gl.createTexture();
                         gl.bindTexture(gl.TEXTURE_2D, imageTexture);
                         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
@@ -6433,29 +6415,15 @@ void main () {
                         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
                         gl.activeTexture(gl.TEXTURE0);
                         gl.bindTexture(gl.TEXTURE_2D, imageTexture);
-                        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
+                        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, fallback);
                     };
-                    img.onerror = () => {
-                        tryNext();
-                    };
-                    img.src = url;
-                }
-                tryNext();
+                    fallback.src = './assets/images/my-Image.jpg';
+                };
+                img.src = src;
             }
 
-            let ambientTime = 0;
-            let lastRipple = 0;
             function render(_t) {
                 const dt = 1 / 60;
-                ambientTime += 0.015;
-                if (!isHovering && container.clientWidth > 0 && (_t - lastRipple > 1500)) {
-                    lastRipple = _t;
-                    pointer.moved = true;
-                    pointer.x = (0.5 + 0.15 * Math.cos(ambientTime)) * container.clientWidth;
-                    pointer.y = (0.5 + 0.15 * Math.sin(ambientTime)) * container.clientHeight;
-                    pointer.dx = Math.cos(ambientTime * 2.0) * 0.8;
-                    pointer.dy = Math.sin(ambientTime * 2.0) * 0.8;
-                }
                 if (pointer.moved) {
                     if (!isPreview) pointer.moved = false;
                     gl.useProgram(splatProgram.program);
