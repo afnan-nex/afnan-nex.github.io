@@ -1,0 +1,46 @@
+# This workflow will do a clean install of node dependencies, build the source code, and deploy static bundle to GitHub Pages
+
+name: Node.js CI
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [18.x]
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: "npm"
+      - name: Installing Packages 🥁
+        run: npm install
+
+      - name: Building 🧱
+        run: npm run build
+        env:
+          NEXT_PUBLIC_TRACKING_ID: G-8FBXBFXC10
+          NEXT_PUBLIC_SERVICE_ID: service_qt4ryip
+          NEXT_PUBLIC_TEMPLATE_ID: template_2ni69n8
+          NEXT_PUBLIC_USER_ID: user_Do31sKneP4eYfn5n1nLTD
+
+      - name: Exporting Bundle Files 🎪
+        run: npm run export
+      - run: touch ./out/.nojekyll
+
+      - name: Deploy to Github-Pages 🚀
+        uses: JamesIves/github-pages-deploy-action@4.1.5
+        with:
+          branch: gh-pages
+          folder: out
